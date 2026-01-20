@@ -1,0 +1,9 @@
+package it.subito.orders.repository;
+
+import it.subito.orders.entity.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Long> {
+}
