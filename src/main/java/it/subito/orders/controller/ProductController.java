@@ -6,9 +6,7 @@ import it.subito.orders.service.ProductService;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,5 +25,11 @@ public class ProductController {
     @GetMapping("/get-all")
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
         return ResponseEntity.ok(productMapper.toDto(productService.getAllProducts()));
+    }
+
+    @RolesAllowed(ROLE_USER)
+    @PostMapping("/add-product")
+    public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO) {
+        return ResponseEntity.ok(productMapper.toDto(productService.addProduct(productMapper.toEntity(productDTO))));
     }
 }
