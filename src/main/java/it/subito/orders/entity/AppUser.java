@@ -1,5 +1,6 @@
 package it.subito.orders.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,9 +9,9 @@ import lombok.Setter;
 import java.util.Set;
 
 @Entity
-@NoArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
 public class AppUser {
 
     @Id
@@ -18,6 +19,7 @@ public class AppUser {
 
     private String password;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "appUser")
     private Set<Order> orders;
 

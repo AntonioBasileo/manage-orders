@@ -1,5 +1,6 @@
 package it.subito.orders.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,16 +10,15 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 @Entity
-@NoArgsConstructor
-@Table(name = "orders")
 @Getter
 @Setter
+@NoArgsConstructor
+@Table(name = "orders")
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_seq")
-    @SequenceGenerator(name = "order_seq", sequenceName = "order_sequence", initialValue = 1000000000, allocationSize = 10)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -28,15 +28,26 @@ public class Order {
     )
     private Set<Product> products;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private AppUser appUser;
 
     private String status;
 
-    private BigDecimal vat;
+    private Integer vat;
 
-    private BigDecimal totalWithoutVat;
+    private BigDecimal totalAmount;
 
-    private BigDecimal totalWithVat;
+
+    @PreUpdate
+    @PrePersist
+    private void calculateTotalAmount() {
+        if (products != null && !products.isEmpty()) {
+            this.totalAmount = products.stream()
+                    .map(Product::getPrice)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+        } else {
+            this.totalAmount = BigDecimal.ZERO;
+        }
+    }
 }

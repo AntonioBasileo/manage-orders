@@ -10,12 +10,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @Slf4j
-public class CustomeDeserializer implements Deserializer<Order> {
+public class CustomDeserializer implements Deserializer<Order> {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
 
-    public CustomeDeserializer() {
+    public CustomDeserializer() {
     }
 
     @Override
@@ -27,7 +27,7 @@ public class CustomeDeserializer implements Deserializer<Order> {
         try {
             return data == null ? null : objectMapper.readValue(new String(data, StandardCharsets.UTF_8), Order.class);
         } catch (Exception e) {
-            throw new SerializationException("Error when deserializing byte[] to OrderDTO");
+            throw new SerializationException("Error when deserializing byte[] to Order");
         }
     }
 

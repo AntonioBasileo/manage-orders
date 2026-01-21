@@ -13,6 +13,21 @@ import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
+/**
+ * Servizio personalizzato per il recupero dei dettagli utente in fase di autenticazione.
+ * <p>
+ * Implementa {@link UserDetailsService} per caricare le informazioni dell'utente
+ * dal repository e convertirle in un oggetto {@link UserDetails} compatibile con Spring Security.
+ * </p>
+ *
+ * <ul>
+ *   <li>Recupera l'utente tramite {@link UserRepository} usando lo username.</li>
+ *   <li>Converte i ruoli dell'utente in {@link SimpleGrantedAuthority} per la gestione delle autorizzazioni.</li>
+ *   <li>Lancia {@link UsernameNotFoundException} se l'utente non viene trovato.</li>
+ * </ul>
+ *
+ * @author antonio-basileo_Alten
+ */
 @Component
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
@@ -20,6 +35,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
 
+    /**
+     * Carica i dettagli dell'utente dato lo username.
+     *
+     * @param username lo username dell'utente da cercare
+     * @return i dettagli dell'utente per Spring Security
+     * @throws UsernameNotFoundException se l'utente non viene trovato
+     */
     @Override
     public @NonNull UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
         AppUser appUser = userRepository.findByUsername(username)

@@ -19,6 +19,21 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Objects;
 
+/**
+ * Configurazione della sorgente dati per l'applicazione.
+ * <p>
+ * Questa classe configura il DataSource, l'EntityManagerFactory e il TransactionManager
+ * per la gestione della persistenza tramite JPA e HikariCP.
+ * </p>
+ *
+ * <ul>
+ *   <li>Abilita la gestione delle transazioni.</li>
+ *   <li>Configura i repository JPA nel package <code>it.subito.orders.repository</code>.</li>
+ *   <li>Imposta le proprietà di Hibernate e del database tramite valori dal file di configurazione.</li>
+ * </ul>
+ *
+ * @author antonio-basileo_Alten
+ */
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(

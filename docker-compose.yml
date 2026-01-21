@@ -1,0 +1,65 @@
+services:
+  # Database MySQL
+  mysqldb:
+    # Scarica immagine mysql8.0
+    image: mysql:8.0
+    # Nome del servizio al quale bisogna connettersi
+    container_name: mysqldb
+    # Comando da eseguire all'avvio del container (ignora maiuscole/minuscole)ó
+    command: --lower_case_table_names=1
+    environment:
+      # Nome del database all'interno del container
+      MYSQL_DATABASE: subito
+      # Password per l'utente root
+      MYSQL_ROOT_PASSWORD: root
+      # Nome utente e password per l'applicazione
+      MYSQL_USER: mysql_app_user
+      MYSQL_PASSWORD: mysql_app_password
+    ports:
+      - "3307:3307"
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Zookeeper (si occupa di coordinare i broker kafka)
+  zookeeper:
+    # Immagine di Zookeeper
+    image: confluentinc/cp-zookeeper:7.5.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  # Kafka
+  kafka:
+    # Scarica immagine kafka 7.5.0
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "29092:29092"
+
+  # Applicazione Spring Boot
+  app:
+    build: .
+    container_name: progetto-subito-app
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    environment:
+      # Con queste variabili si definiscono le impostazioni di connessione al database e al broker Kafka nell'application.yml
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/subito?allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    ports:
+      - "8081:8081"
