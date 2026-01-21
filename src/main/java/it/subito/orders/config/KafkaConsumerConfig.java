@@ -1,8 +1,7 @@
 package it.subito.orders.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import it.subito.orders.entity.Order;
-import it.subito.orders.utility.CustomeDeserializer;
+import it.subito.orders.utility.CustomDeserializer;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -19,11 +18,25 @@ import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.Map;
 
+/**
+ * Configurazione del consumer Kafka per l'applicazione.
+ * <p>
+ * Questa classe definisce le proprietà e i bean necessari per la ricezione di messaggi Kafka,
+ * inclusa la deserializzazione personalizzata degli ordini e la gestione degli errori.
+ * </p>
+ *
+ * <ul>
+ *   <li>Imposta le proprietà del consumer tramite i valori di configurazione.</li>
+ *   <li>Configura il listener container factory per la ricezione batch e la gestione della concorrenza.</li>
+ *   <li>Utilizza {@link CustomDeserializer} per deserializzare i messaggi in oggetti {@link Order}.</li>
+ * </ul>
+ *
+ * @author antonio-basileo_Alten
+ */
 @Configuration
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class KafkaConsumerConfig {
 
-    private final ObjectMapper objectMapper;
     private final KafkaProperties kafkaProperties;
 
     @Value("${spring.kafka.consumer.group-id}")
@@ -33,6 +46,11 @@ public class KafkaConsumerConfig {
     private String kafkaBootstrapServer;
 
 
+    /**
+     * Restituisce le proprietà di configurazione del consumer Kafka.
+     *
+     * @return mappa delle proprietà del consumer
+     */
     public Map<String, Object> props() {
         Map<String, Object> props = kafkaProperties.buildConsumerProperties();
 
@@ -42,11 +60,16 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServer);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, CustomeDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, CustomDeserializer.class);
 
         return props;
     }
 
+    /**
+     * Crea e configura il listener container factory per Kafka.
+     *
+     * @return factory configurata per la ricezione di messaggi {@link Order}
+     */
     @Bean("subitoListenerContainerFactory")
     public ConcurrentKafkaListenerContainerFactory<String, Order> subitoListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, Order> factory = new ConcurrentKafkaListenerContainerFactory<>();
@@ -58,8 +81,14 @@ public class KafkaConsumerConfig {
         return factory;
     }
 
+    /**
+     * Crea e configura il consumer factory per Kafka.
+     *
+     * @param props proprietà del consumer
+     * @return factory configurata per la deserializzazione di {@link Order}
+     */
     @Bean
     public ConsumerFactory<String, Order> subitoConsumerFactory(Map<String, Object> props) {
-        return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new CustomeDeserializer());
+        return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new CustomDeserializer());
     }
 }

@@ -17,6 +17,21 @@ import org.springframework.kafka.core.ProducerFactory;
 
 import java.util.Map;
 
+/**
+ * Configurazione del producer Kafka per l'applicazione.
+ * <p>
+ * Questa classe definisce le proprietà e i bean necessari per l'invio di messaggi Kafka,
+ * inclusa la serializzazione personalizzata degli ordini.
+ * </p>
+ *
+ * <ul>
+ *   <li>Imposta le proprietà del producer tramite i valori di configurazione.</li>
+ *   <li>Configura il {@link ProducerFactory} per la serializzazione di chiavi e valori.</li>
+ *   <li>Espone il bean {@link KafkaTemplate} per l'invio dei messaggi Kafka.</li>
+ * </ul>
+ *
+ * @author antonio-basileo_Alten
+ */
 @Configuration
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class KafkaProducerConfig {
@@ -41,11 +56,21 @@ public class KafkaProducerConfig {
         return props;
     }
 
+    /**
+     * Crea e configura il producer factory per Kafka.
+     *
+     * @return factory configurata per la serializzazione di {@link Order}
+     */
     @Bean
     public ProducerFactory<String, Order> producerFactory() {
         return new DefaultKafkaProducerFactory<>(props());
     }
 
+    /**
+     * Crea e configura il KafkaTemplate per l'invio dei messaggi.
+     *
+     * @return template configurato per l'invio di {@link Order}
+     */
     @Bean
     @Qualifier("kafkaTemplate")
     public KafkaTemplate<String, Order> kafkaTemplate() {
