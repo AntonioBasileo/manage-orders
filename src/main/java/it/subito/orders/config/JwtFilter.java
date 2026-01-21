@@ -19,6 +19,22 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Filtro per la validazione dei token JWT nelle richieste HTTP.
+ * <p>
+ * Questa classe intercetta ogni richiesta, verifica la presenza e la validità
+ * del token JWT nell'header Authorization e, se valido, imposta l'autenticazione
+ * nel contesto di sicurezza di Spring.
+ * </p>
+ *
+ * <ul>
+ *   <li>Estende {@link OncePerRequestFilter} per garantire l'esecuzione una sola volta per richiesta.</li>
+ *   <li>Utilizza {@link JwtUtil} per la validazione e l'estrazione delle informazioni dal token.</li>
+ *   <li>Imposta l'utente autenticato e i relativi ruoli nel {@link SecurityContextHolder}.</li>
+ * </ul>
+ *
+ * @author antonio-basileo_Alten
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -27,6 +43,15 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
 
+    /**
+     * Intercetta la richiesta HTTP, valida il token JWT e imposta l'autenticazione.
+     *
+     * @param request  la richiesta HTTP
+     * @param response la risposta HTTP
+     * @param chain    la catena dei filtri
+     * @throws ServletException in caso di errore nella servlet
+     * @throws IOException      in caso di errore di I/O
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response,
                                     @NonNull FilterChain chain)
