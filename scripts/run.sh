@@ -5,7 +5,7 @@ set -e
 
 echo "--- 🚀 Avvio Progetto Subito ---"
 
-# 1. Pulizia e compilazione del pacchetto JAR con profilo local
+# 1. Pulizia e compilazione del pacchetto JAR
 echo "--- 📦 Compilazione JAR con Maven (se non specifichiamo il profilo in automatico l'applicazione viene compilata con profilo remote) ---"
 ./mvnw clean package -DskipTests
 
