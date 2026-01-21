@@ -1,7 +1,9 @@
 package it.subito.orders.consumer;
 
 import it.subito.orders.entity.Order;
+import it.subito.orders.entity.Product;
 import it.subito.orders.repository.OrderRepository;
+import it.subito.orders.repository.ProductRepository;
 import it.subito.orders.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +12,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Listener Kafka personalizzato per la ricezione e la gestione degli ordini.
@@ -32,6 +35,7 @@ import java.util.List;
 public class CustomKafkaListener {
 
     private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
 
 
     /**
@@ -45,9 +49,20 @@ public class CustomKafkaListener {
      */
     @KafkaListener(topics = "${spring.kafka.consumer.topic}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "subitoListenerContainerFactory")
     public void listen(List<ConsumerRecord<String, Order>> messages) {
-        messages.forEach(message -> {
+        for (ConsumerRecord<String, Order> message : messages) {
             log.info("Received message from kafka producer: {}", message);
-            orderRepository.save(message.value());
-        });
+
+            Order order = message.value();
+            orderRepository.save(order);
+
+            Set<Product> products = order.getProducts();
+            for (Product product : products) {
+                if (product.getQuantity() == 0)
+                    throw new IllegalArgumentException(String.format("Product %s sold out", product.getCode()));
+
+                product.setQuantity(product.getQuantity() - 1);
+                productRepository.save(product);
+            }
+        }
     }
 }
