@@ -48,13 +48,24 @@ L'applicazione segue un flusso asincrono per la creazione degli ordini:
 
 L'applicazione sarà disponibile all'indirizzo `http://localhost:8081/progetto-subito`.
 
-## 🛡️ API Endpoints
+## 🛡️ API Endpoints & Autenticazione
 
-- **Autenticazione:** `/auth/login`, `/auth/register-user`
-- **Catalogo:** `/api/products/get-all` (Popolato da Liquibase all'avvio)
-- **Ordini:**
-   - `POST /api/orders/sendOrder`: Invio ordine asincrono.
-   - `GET /api/orders/my-orders`: Recupero ordini dell'utente corrente.
+Tutte le API dell'applicazione (eccetto quelle di registrazione e login) sono protette tramite **JSON Web Token (JWT)**. Per testare le funzionalità, segui questa procedura:
+
+1. **Registrazione:** Crea un nuovo account inviando una richiesta POST a `/auth/register-user` con il JSON contenente `username` e `password`.
+2. **Login:** Ottieni il token inviando una richiesta GET a `/auth/login` con le medesime credenziali. Il sistema restituirà un JSON contenente il campo `token`.
+3. **Autorizzazione:** Copia il token ricevuto e inseriscilo nell'header di ogni richiesta successiva utilizzando la chiave `Authorization` e il prefisso `Bearer ` (es. `Authorization: Bearer <tuo_token_qui>`).
+
+### Elenco Endpoint:
+
+- **Pubblici:**
+    - `POST /auth/register-user`: Registrazione nuovo utente.
+    - `GET /auth/login`: Autenticazione e rilascio token JWT.
+
+- **Protetti (Richiedono Header Authorization):**
+    - `GET /api/products/get-all`: Visualizza il catalogo prodotti (popolato automaticamente da Liquibase).
+    - `POST /api/orders/sendOrder`: Invia un nuovo ordine (processato in modo asincrono tramite Kafka).
+    - `GET /api/orders/my-orders`: Visualizza lo storico ordini dell'utente autenticato.
 
 ---
 *Sviluppato da Antonio Basileo*
