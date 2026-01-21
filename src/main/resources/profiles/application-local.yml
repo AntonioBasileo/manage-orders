@@ -20,6 +20,8 @@ spring:
     consumer:
       topic: topic-orders
       group-id: subito
+      retries: 5
+      retry-backoff-ms: 2000
   liquibase:
     enabled: true
     changelog: config/liquibase/master.xml
