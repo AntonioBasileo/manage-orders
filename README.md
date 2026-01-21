@@ -64,7 +64,7 @@ Tutte le API dell'applicazione (eccetto quelle di registrazione e login) sono pr
 
 - **Protetti (Richiedono Header Authorization):**
     - `GET /api/products/get-all`: Visualizza il catalogo prodotti (popolato automaticamente da Liquibase).
-    - `POST /api/orders/add-product`: Aggiunge un nuovo prodotto al catalogo.
+    - `POST /api/products/add-product`: Aggiunge un nuovo prodotto al catalogo.
     - `POST /api/orders/sendOrder`: Invia un nuovo ordine (processato in modo asincrono tramite Kafka).
     - `GET /api/orders/my-orders`: Visualizza lo storico ordini dell'utente autenticato.
 
