@@ -36,15 +36,7 @@ L'applicazione segue un flusso asincrono per la creazione degli ordini:
 - Postman o un altro client HTTP per testare le API.
 
 ### Esecuzione
-1. **Compila il progetto** attivando il profilo desiderato (es. local se lo si vuole provare senza Docker. Se non si specifica il profilo oppure si sceglie il profilo remote, l'applicazione deve essere eseguita in un container Docker):
-   ```bash
-   ./mvnw clean package -Plocal -DskipTests
-   ```
-
-2. **Avvia l'infrastruttura con Docker Compose:**
-   ```bash
-   docker compose up --build
-   ```
+1. Eseguire lo script run.sh che troverete nella cartella **scripts**.
 
 L'applicazione sarà disponibile all'indirizzo `http://localhost:8081/progetto-subito`.
 
