@@ -70,6 +70,16 @@ public class AuthService {
     public String registerUser(Map<String, String> userData) {
         String username = userData.get("username");
         String rawPassword = userData.get("password");
+        String role = userData.get("role");
+
+        if (username == null || rawPassword == null
+                || username.isBlank() || rawPassword.isBlank()) {
+            throw new IllegalArgumentException("Username e password non possono essere vuoti");
+        }
+
+        if (role == null || role.isBlank()) {
+            throw new IllegalArgumentException("Il campo ruolo non può essere vuoto");
+        }
 
         if (userRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("Username già esistente");
@@ -78,7 +88,7 @@ public class AuthService {
         AppUser newUser = new AppUser();
         newUser.setUsername(username);
         newUser.setPassword(passwordEncoder.encode(rawPassword));
-        newUser.setRoles(Set.of("ROLE_USER"));
+        newUser.setRoles(Set.of(role));
         userRepository.save(newUser);
 
         return "Registrazione avvenuta con successo";

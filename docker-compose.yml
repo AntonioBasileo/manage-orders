@@ -16,7 +16,9 @@ services:
       MYSQL_USER: mysql_app_user
       MYSQL_PASSWORD: mysql_app_password
     ports:
-      - "3307:3307"
+      - "3307:3306"
+    volumes:
+    - mysql-data:/var/lib/mysql
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
@@ -63,3 +65,10 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     ports:
       - "8081:8081"
+volumes:
+  mysql-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./docker/var/lib/mysql
+      o: bind

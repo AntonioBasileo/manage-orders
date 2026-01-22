@@ -24,7 +24,7 @@ public class OderController {
 
 
     @RolesAllowed(ROLE_USER)
-    @PostMapping("/sendOrder")
+    @PostMapping("/send-order")
     public ResponseEntity<String> sendOrder(@RequestBody OrderDTO order) {
         orderService.sendOrder(orderMapper.toEntity(order));
 

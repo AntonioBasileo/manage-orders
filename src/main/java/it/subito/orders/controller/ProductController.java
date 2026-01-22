@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static it.subito.orders.utility.Constants.ROLE_ADMIN;
 import static it.subito.orders.utility.Constants.ROLE_USER;
 
 @RestController
@@ -21,13 +22,13 @@ public class ProductController {
     private final ProductService productService;
 
 
-    @RolesAllowed(ROLE_USER)
+    @RolesAllowed({ROLE_USER, ROLE_ADMIN})
     @GetMapping("/get-all")
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
         return ResponseEntity.ok(productMapper.toDto(productService.getAllProducts()));
     }
 
-    @RolesAllowed(ROLE_USER)
+    @RolesAllowed(ROLE_ADMIN)
     @PostMapping("/add-product")
     public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO) {
         return ResponseEntity.ok(productMapper.toDto(productService.addProduct(productMapper.toEntity(productDTO))));
