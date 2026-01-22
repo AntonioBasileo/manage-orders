@@ -40,8 +40,8 @@ L'applicazione segue un flusso asincrono per la creazione degli ordini:
 
 L'applicazione sarà disponibile all'indirizzo `http://localhost:8081/progetto-subito`.
 
-Essendo stato effettuato un binding tra la cartella docker/var/lib/mysql (creata nella root del progetto con lo script run.sh) e la cartella /var/lib/mysql del container MySQL,
-potete fare un check sull'integrità dei dati stabilendo una connessione MySql con strumenti come Dbeaver, DataGrip ecc.. (host della connessione: localhost, porta: 3307)
+Essendo stato effettuato un binding tra la cartella docker/var/lib/mysql (creata nella root del progetto) e la cartella /var/lib/mysql del container MySQL,
+è possibile fare un check sull'integrità dei dati stabilendo una connessione MySql con strumenti come Dbeaver, DataGrip ecc.. (host della connessione: localhost, porta: 3307)
 
 ## 🛡️ API Endpoints & Autenticazione
 

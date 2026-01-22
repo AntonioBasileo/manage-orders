@@ -10,9 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Listener Kafka personalizzato per la ricezione e la gestione degli ordini.
@@ -47,22 +49,27 @@ public class CustomKafkaListener {
      *
      * @param messages lista di record Kafka contenenti ordini
      */
+    @Transactional(rollbackFor = Exception.class)
     @KafkaListener(topics = "${spring.kafka.consumer.topic}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "subitoListenerContainerFactory")
     public void listen(List<ConsumerRecord<String, Order>> messages) {
         for (ConsumerRecord<String, Order> message : messages) {
             log.info("Received message from kafka producer: {}", message);
 
             Order order = message.value();
-            orderRepository.save(order);
 
-            Set<Product> products = order.getProducts();
-            for (Product product : products) {
-                if (product.getQuantity() == 0)
-                    throw new IllegalArgumentException(String.format("Product %s sold out", product.getCode()));
+            for (Product product : order.getProducts()) {
+                String productCode = product.getCode();
+                Product productEntity = productRepository.findByCode(productCode).orElseThrow();
+                Long discount = productEntity.getDiscount();
 
-                product.setQuantity(product.getQuantity() - 1);
-                productRepository.save(product);
+                if (discount < product.getQuantity() || discount == 0) {
+                    throw new IllegalArgumentException(String.format("Product %s sold out", productCode));
+                }
+
+                productEntity.setDiscount(productEntity.getDiscount() - product.getQuantity());
             }
+
+            orderRepository.save(order);
         }
     }
 }
