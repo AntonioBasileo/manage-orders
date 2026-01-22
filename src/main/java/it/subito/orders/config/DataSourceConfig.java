@@ -37,9 +37,7 @@ import java.util.Objects;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-        basePackages = "it.subito.orders.repository",
-        entityManagerFactoryRef = "entityManagerFactory",
-        transactionManagerRef = "transactionManager"
+        basePackages = "it.subito.orders.repository"
 )
 public class DataSourceConfig {
 
