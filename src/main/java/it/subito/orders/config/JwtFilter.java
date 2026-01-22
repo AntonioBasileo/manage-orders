@@ -1,5 +1,7 @@
 package it.subito.orders.config;
 
+import it.subito.orders.entity.AppUser;
+import it.subito.orders.repository.UserRepository;
 import it.subito.orders.utility.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,8 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.ott.InvalidOneTimeTokenException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -41,6 +45,7 @@ import java.util.stream.Collectors;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
 
 
     /**
@@ -69,9 +74,17 @@ public class JwtFilter extends OncePerRequestFilter {
 
             if (jwtUtil.validateToken(token)) {
                 String username = jwtUtil.extractUsername(token);
-                Set<String> roles = jwtUtil.extractRoles(token);
 
-                var authorities = roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+                AppUser user = userRepository.findByUsername(username)
+                        .orElseThrow(() -> new UsernameNotFoundException("Invalid token. Username not found"));
+
+                Set<String> rolesClaim = jwtUtil.extractRoles(token);
+                Set<String> userRoles = user.getRoles();
+
+                if (!rolesClaim.containsAll(userRoles))
+                    throw new InvalidOneTimeTokenException("Invalid token. Roles mismatch");
+
+                var authorities = userRoles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
                 var auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
 
                 SecurityContextHolder.getContext().setAuthentication(auth);
