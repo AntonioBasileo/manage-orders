@@ -1,38 +1,38 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.8.xsd">
 
     <changeSet id="insert-products-v1" author="antonio-basileo">
         <insert tableName="product">
             <column name="code" value="P001"/>
             <column name="description" value="Descrizione prodotto 1"/>
-            <column name="quantity" valueNumeric="100"/>
             <column name="price" valueNumeric="69"/>
             <column name="vat" valueNumeric="22"/>
+            <column name="discount" valueNumeric="1000"/>
         </insert>
 
         <insert tableName="product">
             <column name="code" value="P002"/>
             <column name="description" value="Descrizione prodotto 2"/>
-            <column name="quantity" valueNumeric="107"/>
             <column name="price" valueNumeric="119"/>
             <column name="vat" valueNumeric="22"/>
+            <column name="discount" valueNumeric="1000"/>
         </insert>
 
         <insert tableName="product">
             <column name="code" value="P003"/>
             <column name="description" value="Descrizione prodotto 3"/>
-            <column name="quantity" valueNumeric="200"/>
             <column name="price" valueNumeric="725"/>
             <column name="vat" valueNumeric="22"/>
+            <column name="discount" valueNumeric="1000"/>
         </insert>
 
         <insert tableName="product">
             <column name="code" value="P004"/>
             <column name="description" value="Descrizione prodotto 4"/>
-            <column name="quantity" valueNumeric="10"/>
             <column name="price" valueNumeric="220"/>
             <column name="vat" valueNumeric="22"/>
+            <column name="discount" valueNumeric="1000"/>
         </insert>
     </changeSet>
 

@@ -44,7 +44,9 @@ public class Order {
     private void calculateTotalAmount() {
         if (products != null && !products.isEmpty()) {
             this.totalAmount = products.stream()
-                    .map(Product::getPrice)
+                    .map(product ->
+                            product.getPrice()
+                                    .multiply(BigDecimal.valueOf(product.getQuantity())))
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
         } else {
             this.totalAmount = BigDecimal.ZERO;

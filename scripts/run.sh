@@ -14,12 +14,7 @@ echo "--- 📦 Compilazione JAR con Maven (se non specifichiamo il profilo in au
 echo "--- 🛑 Spegnimento container esistenti ---"
 docker compose down
 
-# 3. Creazione cartella per bind mount MySQL (evita errori "no such file or directory")
-echo "--- 📁 Creazione silente cartella docker/var/lib/mysql ---"
-echo "Step necessario per fare il binding (tramite i volumes) con la cartella /var/lib/mysql nel container MySql"
-mkdir -p docker/var/lib/mysql
-
-# 4. Avvio dell'infrastruttura con Docker Compose
+# 3. Avvio dell'infrastruttura con Docker Compose
 echo "--- 🐳 Avvio container con Docker Compose ---"
 docker compose up --build
 
