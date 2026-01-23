@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -14,4 +15,5 @@ public class OrderDTO {
     private String status;
     private Integer vat;
     private BigDecimal totalAmount;
+    private LocalDateTime creationDate;
 }
