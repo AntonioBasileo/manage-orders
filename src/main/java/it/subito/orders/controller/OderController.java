@@ -7,6 +7,7 @@ import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Contract;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +25,8 @@ public class OderController {
 
 
     @RolesAllowed(ROLE_USER)
-    @PostMapping("/send-order")
+    @Contract(value = "null -> fail; !null -> !null")
+    @PostMapping(value = "/send-order", consumes = "application/json", produces = "application/json")
     public ResponseEntity<String> sendOrder(@RequestBody OrderDTO order) {
         orderService.sendOrder(orderMapper.toEntity(order));
 
@@ -32,7 +34,8 @@ public class OderController {
     }
 
     @RolesAllowed(ROLE_USER)
-    @GetMapping("/my-orders")
+    @Contract(value = "-> !null")
+    @GetMapping(value = "/my-orders", produces = "application/json")
     public ResponseEntity<List<OrderDTO>> getMyOrders() {
         return ResponseEntity.ok(orderMapper.toDto(orderService.getOrdersForAuthenticatedUser()));
     }
