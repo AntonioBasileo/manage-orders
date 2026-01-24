@@ -1,5 +1,7 @@
 package it.subito.orders.service;
 
+import it.subito.orders.dto.LoginRequestDTO;
+import it.subito.orders.dto.RegisterRequestDTO;
 import it.subito.orders.entity.AppUser;
 import it.subito.orders.repository.UserRepository;
 import it.subito.orders.utility.JwtUtil;
@@ -45,12 +47,12 @@ public class AuthService {
     /**
      * Genera un token JWT a partire dalle credenziali fornite.
      *
-     * @param credentials mappa contenente username e password
+     * @param credentials oggetto contenente username e password
      * @return mappa con il token JWT generato
      */
-    public Map<String, String> generateToken(Map<String, String> credentials) {
+    public Map<String, String> generateToken(LoginRequestDTO credentials) {
         var auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(credentials.get("username"), credentials.get("password"))
+                new UsernamePasswordAuthenticationToken(credentials.getUsername(), credentials.getPassword())
         );
 
         var roles = auth.getAuthorities().stream()
@@ -63,32 +65,15 @@ public class AuthService {
     /**
      * Registra un nuovo utente con ruolo di default.
      *
-     * @param userData mappa contenente username e password
+     * @param userData oggetto contenente username e password
      * @return messaggio di conferma della registrazione
      * @throws IllegalArgumentException se lo username è già esistente
      */
-    public String registerUser(Map<String, String> userData) {
-        String username = userData.get("username");
-        String rawPassword = userData.get("password");
-        String role = userData.get("role");
-
-        if (username == null || rawPassword == null
-                || username.isBlank() || rawPassword.isBlank()) {
-            throw new IllegalArgumentException("Username e password non possono essere vuoti");
-        }
-
-        if (role == null || role.isBlank()) {
-            throw new IllegalArgumentException("Il campo ruolo non può essere vuoto");
-        }
-
-        if (userRepository.existsByUsername(username)) {
-            throw new IllegalArgumentException("Username già esistente");
-        }
-
+    public String registerUser(RegisterRequestDTO userData) {
         AppUser newUser = new AppUser();
-        newUser.setUsername(username);
-        newUser.setPassword(passwordEncoder.encode(rawPassword));
-        newUser.setRoles(Set.of(role));
+        newUser.setUsername(userData.getUsername());
+        newUser.setPassword(passwordEncoder.encode(userData.getPassword()));
+        newUser.setRoles(Set.of(userData.getRole()));
         userRepository.save(newUser);
 
         return "Registrazione avvenuta con successo";
