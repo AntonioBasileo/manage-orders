@@ -11,7 +11,7 @@ echo "--- 📦 Compilazione JAR con Maven (se non specifichiamo il profilo in au
 
 # Crea la cartella per il bind mount del volume MySQL (serve se non esiste ancora)
 echo "--- 📁 Creazione cartella per il bind mount sql"
-mkdir -p docker/var/lib/mysql
+mkdir -p ../docker/var/lib/mysql
 
 # 2. Spegnimento di eventuali container precedenti e pulizia volumi (opzionale)
 # Nota: il flag -v cancella i dati del DB, rimuovilo se vuoi mantenere i dati tra i riavvii
