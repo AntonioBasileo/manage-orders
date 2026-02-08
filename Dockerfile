@@ -7,7 +7,10 @@ USER appuser
 ARG JAR_FILE=target/*.jar
 
 # Copia il file JAR selezionato nella posizione dell'app
-COPY ${JAR_FILE} app.jar
+COPY ${JAR_FILE} target/app.jar
+COPY ./scripts ./scripts
+
+RUN chmod +x ./scripts/run.sh
 
 # Imposta il punto di ingresso per eseguire il JAR
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["./scripts/run.sh"]
