@@ -1,4 +1,4 @@
-# Manage Orders - Progetto Subito
+# Manage Orders 
 
 **Manage Orders** è un'applicazione basata su Spring Boot e Java progettata per la gestione sicura e scalabile degli ordini. L'applicazione adotta un approccio **event-driven** tramite Kafka e separa nettamente la persistenza dalla comunicazione esterna tramite l'uso di **DTO** e **Mapper**.
 
