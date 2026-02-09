@@ -1,7 +1,9 @@
 FROM eclipse-temurin:21-jdk
 
-RUN useradd -m -d /home/appuser -s /bin/bash appuser
-USER appuser
+WORKDIR /manage-orders
+
+# Utente non-root
+RUN addgroup --system manage-orders && adduser --system --ingroup manage-orders manage-orders-user
 
 # Presupponendo che ci sia solo una versione nella cartella target
 ARG JAR_FILE=target/*.jar
@@ -10,7 +12,9 @@ ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} target/app.jar
 COPY ./scripts ./scripts
 
-RUN chmod +x ./scripts/run.sh
+# Permessi
+RUN chown -R manage-orders-user:manage-orders . && \
+    chmod +x scripts/run.sh
 
 # Imposta il punto di ingresso per eseguire il JAR
 ENTRYPOINT ["./scripts/run.sh"]
