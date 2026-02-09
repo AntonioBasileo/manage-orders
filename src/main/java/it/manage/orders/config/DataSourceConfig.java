@@ -32,12 +32,13 @@ import java.util.Objects;
  *   <li>Imposta le proprietà di Hibernate e del database tramite valori dal file di configurazione.</li>
  * </ul>
  *
- * @author antonio-basileo_Alten
+ * @author Antonio Basileo
  */
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-        basePackages = "it.manage.orders.repository"
+        basePackages = "it.manage.orders.repository",
+        entityManagerFactoryRef = "entityManagerFactory"
 )
 public class DataSourceConfig {
 

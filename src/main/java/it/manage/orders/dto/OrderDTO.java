@@ -16,4 +16,5 @@ public class OrderDTO {
     private Integer vat;
     private BigDecimal totalAmount;
     private LocalDateTime creationDate;
+    private String username;
 }

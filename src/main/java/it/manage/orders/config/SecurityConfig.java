@@ -36,7 +36,7 @@ import java.util.List;
  *   <li>Espone i bean per l'encoder delle password e il manager di autenticazione.</li>
  * </ul>
  *
- * @author antonio-basileo_Alten
+ * @author Antonio Basileo
  */
 @Configuration
 @EnableWebSecurity

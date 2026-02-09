@@ -18,7 +18,7 @@ import java.util.List;
  *   <li>Recupera tutti i prodotti dal repository.</li>
  * </ul>
  *
- * @author antonio-basileo_Alten
+ * @author Antonio Basileo
  */
 @Service
 @RequiredArgsConstructor

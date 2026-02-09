@@ -1,5 +1,7 @@
 package it.manage.orders.config;
 
+import it.manage.orders.dto.OrderDTO;
+import it.manage.orders.dto.OrderDTO;
 import it.manage.orders.entity.Order;
 import it.manage.orders.utility.CustomDeserializer;
 import lombok.RequiredArgsConstructor;
@@ -28,16 +30,17 @@ import java.util.Map;
  * <ul>
  *   <li>Imposta le proprietà del consumer tramite i valori di configurazione.</li>
  *   <li>Configura il listener container factory per la ricezione batch e la gestione della concorrenza.</li>
- *   <li>Utilizza {@link CustomDeserializer} per deserializzare i messaggi in oggetti {@link Order}.</li>
+ *   <li>Utilizza {@link CustomDeserializer} per deserializzare i messaggi in oggetti {@link OrderDTO}.</li>
  * </ul>
  *
- * @author antonio-basileo_Alten
+ * @author Antonio Basileo
  */
 @Configuration
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class KafkaConsumerConfig {
 
     private final KafkaProperties kafkaProperties;
+    private final CustomDeserializer customDeserializer;
 
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
@@ -60,7 +63,6 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServer);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, CustomDeserializer.class);
 
         return props;
     }
@@ -71,8 +73,8 @@ public class KafkaConsumerConfig {
      * @return factory configurata per la ricezione di messaggi {@link Order}
      */
     @Bean("listenerContainerFactory")
-    public ConcurrentKafkaListenerContainerFactory<String, Order> listenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Order> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, OrderDTO> listenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, OrderDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory(props()));
         factory.setConcurrency(3);
         factory.setBatchListener(true);
@@ -85,10 +87,10 @@ public class KafkaConsumerConfig {
      * Crea e configura il consumer factory per Kafka.
      *
      * @param props proprietà del consumer
-     * @return factory configurata per la deserializzazione di {@link Order}
+     * @return factory configurata per la deserializzazione di {@link OrderDTO}
      */
     @Bean
-    public ConsumerFactory<String, Order> consumerFactory(Map<String, Object> props) {
-        return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new CustomDeserializer());
+    public DefaultKafkaConsumerFactory<String, OrderDTO> consumerFactory(Map<String, Object> props) {
+        return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), customDeserializer);
     }
 }

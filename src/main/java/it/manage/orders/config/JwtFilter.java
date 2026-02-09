@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
  *   <li>Imposta l'utente autenticato e i relativi ruoli nel {@link SecurityContextHolder}.</li>
  * </ul>
  *
- * @author antonio-basileo_Alten
+ * @author Antonio Basileo
  */
 @Slf4j
 @Component

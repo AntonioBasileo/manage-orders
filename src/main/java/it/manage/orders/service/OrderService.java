@@ -1,12 +1,14 @@
 package it.manage.orders.service;
 
+import it.manage.orders.dto.OrderDTO;
 import it.manage.orders.entity.Order;
 import it.manage.orders.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -19,7 +21,7 @@ import java.util.UUID;
  *   <li>Invia ordini al topic Kafka configurato.</li>
  * </ul>
  *
- * @author antonio-basileo_Alten
+ * @author Antonio Basileo
  */
 @Service
 @RequiredArgsConstructor
@@ -27,20 +29,37 @@ public class OrderService {
 
     private final AuthService authService;
     private final OrderRepository orderRepository;
-    private final KafkaTemplate<String, Order> kafkaTemplate;
+    private final KafkaTemplate<String, OrderDTO> kafkaTemplate;
+
+    @Value("${spring.kafka.consumer.topic}")
+    private String kafkaTopic;
 
 
     /**
-     * Invia un ordine al topic Kafka.
+     * Invia un ordine al topic Kafka su una partizione specifica.
      *
      * @param order l'ordine da inviare
      */
-    public void sendOrder(Order order) {
-        order.setAppUser(authService.getAuthenticatedUser());
-        kafkaTemplate.send("topic-orders", UUID.randomUUID().toString(), order);
+    public void sendOrder(OrderDTO order) {
+        String key = UUID.randomUUID().toString();
+        order.setUsername(authService.getAuthenticatedUser().getUsername());
+
+        ProducerRecord<String, OrderDTO> record = new ProducerRecord<>(
+                kafkaTopic,
+                0,
+                key,
+                order
+        );
+
+        kafkaTemplate.send(record);
     }
 
-    public List<Order> getOrdersForAuthenticatedUser() {
+    /**
+     * Recupera tutti gli ordini dell'utente autenticato.
+     *
+     * @return lista degli ordini dell'utente autenticato
+     */
+    public java.util.List<Order> getOrdersForAuthenticatedUser() {
         return orderRepository.findByAppUserUsername(authService.getAuthenticatedUser().getUsername());
     }
 }

@@ -28,7 +28,7 @@ public class OderController {
     @Contract(value = "null -> fail; !null -> !null")
     @PostMapping(value = "/send-order", consumes = "application/json", produces = "application/json")
     public ResponseEntity<String> sendOrder(@RequestBody OrderDTO order) {
-        orderService.sendOrder(orderMapper.toEntity(order));
+        orderService.sendOrder(order);
 
         return ResponseEntity.ok("Order sent successfully");
     }

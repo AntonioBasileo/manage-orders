@@ -5,6 +5,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -27,13 +28,15 @@ import java.util.stream.Collectors;
  *   <li>Valida la firma e la scadenza di un token JWT.</li>
  * </ul>
  *
- * @author antonio-basileo_Alten
+ * @author Antonio Basileo
  */
 @Component
 @Qualifier("jwtUtil")
 public class JwtUtil {
 
-    private static final String SECRET = "una_chiave_segreta_molto_lunga_e_sicura_da_almeno_32_caratteri";
+    @Value("${jwt.secret}")
+    private String SECRET;
+
     private static final long EXPIRATION = 86400000; // 1 giorno
 
 

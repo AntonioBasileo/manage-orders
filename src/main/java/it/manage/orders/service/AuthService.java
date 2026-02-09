@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  *   <li>Genera token JWT tramite {@link JwtUtil}.</li>
  * </ul>
  *
- * @author antonio-basileo_Alten
+ * @author Antonio Basileo
  */
 @Service
 @RequiredArgsConstructor

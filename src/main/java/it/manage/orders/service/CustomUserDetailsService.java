@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  *   <li>Lancia {@link UsernameNotFoundException} se l'utente non viene trovato.</li>
  * </ul>
  *
- * @author antonio-basileo_Alten
+ * @author Antonio Basileo
  */
 @Component
 @RequiredArgsConstructor

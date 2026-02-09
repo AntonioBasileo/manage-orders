@@ -1,31 +1,32 @@
 package it.manage.orders.utility;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.manage.orders.entity.Order;
+import it.manage.orders.dto.OrderDTO;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Deserializer;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @Slf4j
-public class CustomDeserializer implements Deserializer<Order> {
+@Component
+@RequiredArgsConstructor
+public class CustomDeserializer implements Deserializer<OrderDTO> {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
-
-    public CustomDeserializer() {
-    }
 
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {
     }
 
     @Override
-    public Order deserialize(String topic, byte[] data) {
+    public OrderDTO deserialize(String topic, byte[] data) {
         try {
-            return data == null ? null : objectMapper.readValue(new String(data, StandardCharsets.UTF_8), Order.class);
+            return data == null ? null : objectMapper.readValue(new String(data, StandardCharsets.UTF_8), OrderDTO.class);
         } catch (Exception e) {
             throw new SerializationException("Error when deserializing byte[] to Order");
         }

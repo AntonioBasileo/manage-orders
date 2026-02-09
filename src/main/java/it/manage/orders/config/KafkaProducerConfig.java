@@ -1,5 +1,6 @@
 package it.manage.orders.config;
 
+import it.manage.orders.dto.OrderDTO;
 import it.manage.orders.entity.Order;
 import it.manage.orders.utility.CustomSerializer;
 import lombok.RequiredArgsConstructor;
@@ -30,13 +31,14 @@ import java.util.Map;
  *   <li>Espone il bean {@link KafkaTemplate} per l'invio dei messaggi Kafka.</li>
  * </ul>
  *
- * @author antonio-basileo_Alten
+ * @author Antonio Basileo
  */
 @Configuration
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class KafkaProducerConfig {
 
     private final KafkaProperties kafkaProperties;
+    private final CustomSerializer customSerializer;
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String kafkaBootstrapServer;
@@ -51,7 +53,6 @@ public class KafkaProducerConfig {
         props.put(ProducerConfig.LINGER_MS_CONFIG, 10);
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServer);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, CustomSerializer.class);
 
         return props;
     }
@@ -62,8 +63,8 @@ public class KafkaProducerConfig {
      * @return factory configurata per la serializzazione di {@link Order}
      */
     @Bean
-    public ProducerFactory<String, Order> producerFactory() {
-        return new DefaultKafkaProducerFactory<>(props());
+    public ProducerFactory<String, OrderDTO> producerFactory() {
+        return new DefaultKafkaProducerFactory<>(props(), new StringSerializer(), customSerializer);
     }
 
     /**
@@ -73,7 +74,7 @@ public class KafkaProducerConfig {
      */
     @Bean
     @Qualifier("kafkaTemplate")
-    public KafkaTemplate<String, Order> kafkaTemplate() {
+    public KafkaTemplate<String, OrderDTO> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }
