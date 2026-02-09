@@ -16,7 +16,7 @@ public class LiquibaseConfiguration {
     @Bean
     @DependsOn("dataSource")
     public SpringLiquibase liquibase(@Autowired @Qualifier("dataSource") DataSource esbDataSource,
-                                     @Value("${subito.environment}") String env,
+                                     @Value("${manage-orders.environment}") String env,
                                      @Value("${spring.liquibase.changelog}") String liquibaseChangelog,
                                      @Value("${spring.liquibase.schema}") String liquibaseSchema) {
         SpringLiquibase liquibase = new SpringLiquibase();

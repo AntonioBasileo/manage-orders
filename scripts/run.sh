@@ -3,5 +3,5 @@
 # Interrompe lo script in caso di errore
 set -e
 
-echo "--- 🚀 Avvio Progetto Subito ---"
+echo "--- 🚀 Avvio Progetto Manage Orders ---"
 java -jar target/app.jar

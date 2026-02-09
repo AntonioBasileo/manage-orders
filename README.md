@@ -38,7 +38,7 @@ L'applicazione segue un flusso asincrono per la creazione degli ordini:
 ### Esecuzione
 1. Eseguire lo script run.sh nella cartella **scripts**.
 
-L'applicazione sarà disponibile all'indirizzo `http://localhost:8081/progetto-subito`.
+L'applicazione sarà disponibile all'indirizzo `http://localhost:8081/manage-orders`.
 
 Poichè è stato fatto un binding tra la cartella docker/var/lib/mysql (creata nella root del progetto) e la cartella /var/lib/mysql del container MySQL,
 è possibile fare un check sull'integrità dei dati stabilendo una connessione MySql con strumenti come Dbeaver, DataGrip ecc.. (host della connessione: localhost, porta: 3307)

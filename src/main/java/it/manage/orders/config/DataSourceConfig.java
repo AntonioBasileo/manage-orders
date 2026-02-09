@@ -28,7 +28,7 @@ import java.util.Objects;
  *
  * <ul>
  *   <li>Abilita la gestione delle transazioni.</li>
- *   <li>Configura i repository JPA nel package <code>it.subito.orders.repository</code>.</li>
+ *   <li>Configura i repository JPA nel package <code>it.manage.orders.repository</code>.</li>
  *   <li>Imposta le proprietà di Hibernate e del database tramite valori dal file di configurazione.</li>
  * </ul>
  *
@@ -37,7 +37,7 @@ import java.util.Objects;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-        basePackages = "it.subito.orders.repository"
+        basePackages = "it.manage.orders.repository"
 )
 public class DataSourceConfig {
 
@@ -79,8 +79,8 @@ public class DataSourceConfig {
 
         return builder
                 .dataSource(dataSource)
-                .packages("it.subito.orders.entity")
-                .persistenceUnit("subito")
+                .packages("it.manage.orders.entity")
+                .persistenceUnit("manage-orders")
                 .properties(properties)
                 .build();
     }

@@ -9,11 +9,11 @@
         <relativePath/>
     </parent>
 
-    <groupId>it.subito.orders</groupId>
-    <artifactId>progetto_subito</artifactId>
+    <groupId>it.manage.orders</groupId>
+    <artifactId>manage-orders</artifactId>
     <version>1.1.0</version>
-    <name>progetto_subito</name>
-    <description>progetto_subito</description>
+    <name>manage-orders</name>
+    <description>manage-orders</description>
 
     <properties>
         <jwt.version>0.13.0</jwt.version>

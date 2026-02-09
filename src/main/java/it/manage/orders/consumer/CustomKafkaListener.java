@@ -48,7 +48,7 @@ public class CustomKafkaListener {
      * @param messages lista di record Kafka contenenti ordini
      */
     @Transactional(rollbackFor = Exception.class)
-    @KafkaListener(topics = "${spring.kafka.consumer.topic}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "subitoListenerContainerFactory")
+    @KafkaListener(topics = "${spring.kafka.consumer.topic}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "listenerContainerFactory")
     public void listen(List<ConsumerRecord<String, Order>> messages) {
         for (ConsumerRecord<String, Order> message : messages) {
             log.info("Received message from kafka producer: {}", message);

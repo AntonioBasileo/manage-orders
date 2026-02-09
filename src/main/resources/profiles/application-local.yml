@@ -1,4 +1,4 @@
-subito:
+manage-orders:
   environment: local
 
 spring:
@@ -6,11 +6,11 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/subito
+    url: jdbc:mysql://localhost:3306/manage-orders
   jpa:
     properties:
       hibernate:
-        default_schema: subito
+        default_schema: manage-orders
         show_sql: false
     hibernate:
       ddl-auto: update
@@ -19,13 +19,13 @@ spring:
     bootstrap-servers: localhost:9092
     consumer:
       topic: topic-orders
-      group-id: subito
+      group-id: manage-orders
       retries: 5
       retry-backoff-ms: 2000
   liquibase:
     enabled: true
     changelog: config/liquibase/master.xml
-    schema: subito
+    schema: manage-orders
 
 logging:
   level:
@@ -34,4 +34,4 @@ logging:
 server:
   port: 8081
   servlet:
-    context-path: /progetto-subito
+    context-path: /manage-orders

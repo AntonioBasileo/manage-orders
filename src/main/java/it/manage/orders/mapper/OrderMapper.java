@@ -1,4 +1,3 @@
-// src/main/java/it/subito/orders/mapper/OrderMapper.java
 package it.manage.orders.mapper;
 
 import it.manage.orders.dto.OrderDTO;

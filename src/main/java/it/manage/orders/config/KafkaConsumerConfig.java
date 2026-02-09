@@ -70,10 +70,10 @@ public class KafkaConsumerConfig {
      *
      * @return factory configurata per la ricezione di messaggi {@link Order}
      */
-    @Bean("subitoListenerContainerFactory")
-    public ConcurrentKafkaListenerContainerFactory<String, Order> subitoListenerContainerFactory() {
+    @Bean("listenerContainerFactory")
+    public ConcurrentKafkaListenerContainerFactory<String, Order> listenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, Order> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(subitoConsumerFactory(props()));
+        factory.setConsumerFactory(consumerFactory(props()));
         factory.setConcurrency(3);
         factory.setBatchListener(true);
         factory.setCommonErrorHandler(new DefaultErrorHandler(new FixedBackOff(1000, 3)));
@@ -88,7 +88,7 @@ public class KafkaConsumerConfig {
      * @return factory configurata per la deserializzazione di {@link Order}
      */
     @Bean
-    public ConsumerFactory<String, Order> subitoConsumerFactory(Map<String, Object> props) {
+    public ConsumerFactory<String, Order> consumerFactory(Map<String, Object> props) {
         return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new CustomDeserializer());
     }
 }
