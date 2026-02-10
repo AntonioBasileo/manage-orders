@@ -9,7 +9,7 @@ RUN addgroup --system manage-orders && adduser --system --ingroup manage-orders 
 ARG JAR_FILE=target/*.jar
 
 # Copia il file JAR selezionato nella posizione dell'app
-COPY ${JAR_FILE} target/app.jar
+COPY ${JAR_FILE} target/manage-orders-app.jar
 COPY ./scripts ./scripts
 
 # Permessi

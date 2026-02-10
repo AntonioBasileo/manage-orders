@@ -16,8 +16,8 @@ START_TIME="$(date +%s)"
 echo "--- 🚀 Avvio Progetto Manage Orders ---"
 
 # Controlli su host, port, dbname e user. Se una delle variabili è vuota, esci.
-if [ -z "$DB_HOST" ] || [ -z "$DB_PORT" ] || [ -z "$DB_NAME" ] || [ -z "$DB_USER" ]; then
-  echo "ERROR: DB_HOST or DB_PORT or DB_NAME or DB_USER is empty."
+if [ -z "$DB_HOST" ] || [ -z "$DB_PORT" ] || [ -z "$DB_NAME" ] || [ -z "$DB_USER" ] || [ -z "$DB_PASSWORD" ]; then
+  echo "ERROR: DB_HOST or DB_PORT or DB_NAME or DB_USER or DB_PASSWORD is empty."
   exit 1
 fi
 
@@ -73,4 +73,4 @@ do
 done
 
 echo "MySQL is ready. Running migrations..."
-java -jar target/app.jar
+java -jar target/manage-orders-app.jar
