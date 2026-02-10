@@ -16,7 +16,7 @@ variables:
 build:
   stage: build
   before_script:
-    - echo "--- 📦 Setup environment ---"
+    - echo "--- 📦 Setup environment prova 1 ---"
     - echo $JAVA_HOME
     - java -version
   script:
