@@ -11,12 +11,6 @@ workflow:
 
 build:
   stage: build
-  before_script:
-    - echo "--- 📦 Setup environment ---"
-    - export JAVA_HOME="$(/usr/libexec/java_home -v 25 2>/dev/null || /usr/libexec/java_home)"
-    - export PATH="$JAVA_HOME/bin:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-    - java -version
-    - ./mvnw -version
   script:
     - echo "---🔨Build immagine Docker ---"
     - ./mvnw clean package -DskipTests
