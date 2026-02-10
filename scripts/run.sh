@@ -8,7 +8,7 @@ cd /manage-orders
 DB_HOST="${DB_HOST:-db-service.general.svc.cluster.local}"
 DB_PORT="${DB_PORT:-3306}"
 DB_NAME="${DB_NAME:-manage-orders}"
-DB_USER="${SPRING_DATASOURCE_USERNAME:-}"
+DB_USER="${DB_USER:-manage_orders_user}"
 DB_PASSWORD="${DB_PASSWORD:-}"
 MAX_WAIT_SECONDS_ENTRYPOINT="${MAX_WAIT_SECONDS_ENTRYPOINT:-60}"
 START_TIME="$(date +%s)"
