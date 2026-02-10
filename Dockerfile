@@ -14,7 +14,7 @@ COPY ./scripts ./scripts
 
 # Permessi
 RUN chown -R manage-orders-user:manage-orders . && \
-    chmod +x scripts/run.sh
+    chmod +x scripts/entrypoint.sh
 
 # Imposta il punto di ingresso per eseguire il JAR
-ENTRYPOINT ["./scripts/run.sh"]
+ENTRYPOINT ["./scripts/entrypoint.sh"]
