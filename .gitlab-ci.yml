@@ -18,6 +18,7 @@ build:
     - docker build -t manage-orders-app:latest .
     - docker tag manage-orders-app:latest antoniobasileo/manage-orders-app:latest
     - docker push antoniobasileo/manage-orders-app:latest
+    - echo "---✅ Immagine docker pushata su Docker Hub (antoniobasileo/manage-orders-app:latest) ---"
 
 deploy:
   stage: deploy
