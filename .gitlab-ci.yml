@@ -1,0 +1,27 @@
+stages:
+  - build
+  - deploy
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main" && $CI_OPEN_MERGE_REQUESTS'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+build:
+  stage: build
+  script:
+    - echo "---🔨Build immagine Docker ---"
+    - ./mvnw clean package -DskipTests
+    - docker build -t manage-orders-app:latest .
+    - docker tag manage-orders-app:latest antoniobasileo/manage-orders-app:latest
+    - docker push antoniobasileo/manage-orders-app:latest
+
+deploy:
+  stage: deploy
+  script:
+    - echo "-- 🏗️️ Deploy su Kubernetes ---"
+    - kubectl config use-context docker-desktop
+    - cd ../kube-config
+    - ./scripts/apply.sh manage-orders general
