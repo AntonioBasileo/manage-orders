@@ -18,7 +18,6 @@ build:
   before_script:
     - echo "--- 📦 Setup environment prova 1 ---"
     - echo $JAVA_HOME
-    - java -version
   script:
     - echo "---🔨Build immagine Docker ---"
     - ./mvnw clean package -DskipTests
