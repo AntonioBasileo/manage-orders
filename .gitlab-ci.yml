@@ -15,12 +15,12 @@ build:
     - export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-25.jdk/Contents/Home
     - export PATH="$JAVA_HOME/bin:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     - echo "JAVA_HOME=$JAVA_HOME"
-    - ls -ld "$JAVA_HOME" || true
-    - ls -l "$JAVA_HOME/bin" || true
-    - ls -l "$JAVA_HOME/bin/java" || true
-    - "$JAVA_HOME/bin/java" -version || true
-    - which java || true
-    - java -version || true
+    - ls -ld "$JAVA_HOME"
+    - ls -l "$JAVA_HOME/bin"
+    - ls -l "$JAVA_HOME/bin/java"
+    - "$JAVA_HOME/bin/java" -version
+    - which java
+    - java -version
     - ./mvnw -version
   script:
     - echo "---🔨Build immagine Docker ---"
