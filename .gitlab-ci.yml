@@ -18,7 +18,7 @@ build:
     - ls -ld "$JAVA_HOME"
     - ls -l "$JAVA_HOME/bin"
     - ls -l "$JAVA_HOME/bin/java"
-    - "$JAVA_HOME/bin/java" -version
+    - $JAVA_HOME/bin/java -version
     - which java
     - java -version
     - ./mvnw -version
