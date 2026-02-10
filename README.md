@@ -35,13 +35,21 @@ L'applicazione segue un flusso asincrono per la creazione degli ordini:
 - Java 21 installato.
 - Postman o un altro client HTTP per testare le API.
 
-### Esecuzione
-1. Eseguire lo script run.sh nella cartella **scripts**.
+### Pipeline CI/CD con GitLab
 
-L'applicazione sarà disponibile all'indirizzo `http://localhost:8081/manage-orders`.
+Il progetto è configurato con una **GitLab CI/CD Pipeline** definita nel file `.gitlab-ci.yml`.
+La pipeline è eseguita automaticamente ad ogni push o merge request effettuati sul branch `main` tramite **GitLab Runner**.
 
-Poichè è stato fatto un binding tra la cartella docker/var/lib/mysql (creata nella root del progetto) e la cartella /var/lib/mysql del container MySQL,
-è possibile fare un check sull'integrità dei dati stabilendo una connessione MySql con strumenti come Dbeaver, DataGrip ecc.. (host della connessione: localhost, porta: 3307)
+#### Struttura della Pipeline
+- **Build Stage:** Compilazione del progetto Maven e esecuzione dei test.
+- **Deploy Stage:** Deployment automatico su Kubernetes tramite `kubectl`.
+
+#### Configurazione del Runner
+I runner GitLab sono configurati per eseguire i job della pipeline in ambienti containerizzati. Assicurati che:
+1. Il runner GitLab sia installato e registrato nel progetto.
+2. Docker sia disponibile nell'ambiente di esecuzione del runner.
+3. Il contesto Kubernetes (`docker-desktop`) sia configurato correttamente.
+
 
 ## 🛡️ API Endpoints & Autenticazione
 
