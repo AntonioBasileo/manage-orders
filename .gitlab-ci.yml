@@ -10,7 +10,7 @@ workflow:
     - if: '$CI_COMMIT_BRANCH == "main"'
 
 variables:
-  JAVA_HOME: /Library/Java/JavaVirtualMachines/jdk-25.jdk/Contents/Home
+  JAVA_HOME: /Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home
   PATH: $JAVA_HOME/bin:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin
 
 build:
