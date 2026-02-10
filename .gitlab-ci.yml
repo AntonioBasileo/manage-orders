@@ -12,7 +12,7 @@ workflow:
 build:
   stage: build
   script:
-    - echo "---🔨Build immagine Docker ---"
+    - echo "---🔨Build immagine Docker prova 1 ---"
     - ./mvnw clean package -DskipTests
     - docker build -t manage-orders-app:latest .
     - docker tag manage-orders-app:latest antoniobasileo/manage-orders-app:latest
