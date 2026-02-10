@@ -1,6 +1,7 @@
 stages:
   - build
   - deploy
+  - push
 
 workflow:
   rules:
@@ -27,8 +28,6 @@ build:
     - docker tag manage-orders-app:latest antoniobasileo/manage-orders-app:latest
     - docker push antoniobasileo/manage-orders-app:latest
     - echo "---✅ Immagine docker pushata su Docker Hub (antoniobasileo/manage-orders-app:latest) ---"
-    - git push origin main
-    - echo "---✅ Push su GitHub ---"
 
 deploy:
   stage: deploy
@@ -40,3 +39,9 @@ deploy:
     - cd /Users/antoniobasileo/progetti/kube-config
     - ./scripts/apply.sh manage-orders general
     - echo "---✅ Deploy completato su Kubernetes ---"
+    - cd /Users/antoniobasileo/progetti/manage-orders
+    - git remote add github git@github.com:AntonioBasileo/manage-orders.git
+    - git add .
+    - git commit -m "ci - auto-commit after successful deploy [skip ci]"
+    - git push github $CI_COMMIT_BRANCH || echo "⚠️ Nessuna modifica da pushare su GitHub"
+    - echo "---✅ Push su GitHub completato ---"
