@@ -11,8 +11,13 @@ workflow:
 
 build:
   stage: build
+  before_script:
+    - export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-25.jdk/Contents/Home
+    - export PATH=$JAVA_HOME/bin:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin
+    - java -version
+    - ./mvnw -version
   script:
-    - echo "---🔨Build immagine Docker prova 1 ---"
+    - echo "---🔨Build immagine Docker ---"
     - ./mvnw clean package -DskipTests
     - docker build -t manage-orders-app:latest .
     - docker tag manage-orders-app:latest antoniobasileo/manage-orders-app:latest
