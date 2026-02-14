@@ -17,9 +17,6 @@ build:
   stage: build
   tags:
     - MacBook Pro
-  before_script:
-    - echo "--- 📦 Setup environment ---"
-    - echo $JAVA_HOME
   script:
     - echo "---🔨Build immagine Docker ---"
     - mvn clean package -DskipTests
