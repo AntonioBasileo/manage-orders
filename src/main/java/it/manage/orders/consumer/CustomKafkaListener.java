@@ -6,7 +6,6 @@ import it.manage.orders.entity.Product;
 import it.manage.orders.mapper.OrderMapper;
 import it.manage.orders.repository.OrderRepository;
 import it.manage.orders.repository.ProductRepository;
-import it.manage.orders.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

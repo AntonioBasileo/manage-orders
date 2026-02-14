@@ -28,6 +28,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>it.auth.security</groupId>
+            <artifactId>auth-security-starter</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${spring.map-struct.version}</version>

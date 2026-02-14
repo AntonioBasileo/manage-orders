@@ -1,8 +1,8 @@
 package it.manage.orders.controller;
 
-import it.manage.orders.dto.LoginRequestDTO;
-import it.manage.orders.dto.RegisterRequestDTO;
-import it.manage.orders.service.AuthService;
+import it.auth.security.starter.service.AuthService;
+import it.auth.security.core.dto.LoginRequestDTO;
+import it.auth.security.core.dto.RegisterRequestDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

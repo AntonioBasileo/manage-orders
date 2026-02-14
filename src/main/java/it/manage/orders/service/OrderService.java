@@ -1,5 +1,6 @@
 package it.manage.orders.service;
 
+import it.auth.security.starter.service.AuthService;
 import it.manage.orders.dto.OrderDTO;
 import it.manage.orders.entity.Order;
 import it.manage.orders.repository.OrderRepository;
