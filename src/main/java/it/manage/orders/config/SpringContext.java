@@ -12,17 +12,10 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class SpringContext {
 
-    private final JwtFilter jwtFilter;
-
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         return mapper;
-    }
-
-    @Bean
-    public SecurityConfig securityConfig() {
-        return new SecurityConfig(jwtFilter);
     }
 }
