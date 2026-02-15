@@ -80,7 +80,7 @@ public class DataSourceConfig {
 
         return builder
                 .dataSource(dataSource)
-                .packages("it.manage.orders.entity, it.auth.security.starter.entity")
+                .packages("it.manage.orders.entity, it.auth.security.core.entity")
                 .persistenceUnit("manage-orders")
                 .properties(properties)
                 .build();
