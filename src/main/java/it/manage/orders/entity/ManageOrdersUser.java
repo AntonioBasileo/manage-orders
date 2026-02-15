@@ -13,6 +13,6 @@ import java.util.Set;
 public class ManageOrdersUser extends it.auth.security.core.entity.AppUser {
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "appUser")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "manageOrdersUser")
     private Set<Order> orders;
 }
