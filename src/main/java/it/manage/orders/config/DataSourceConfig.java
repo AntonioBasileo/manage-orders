@@ -37,7 +37,7 @@ import java.util.Objects;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-        basePackages = {"it.manage.orders.repository", "it.auth.security.starter.repository"},
+        basePackages = {"it.manage.orders.repository"},
         entityManagerFactoryRef = "entityManagerFactory"
 )
 public class DataSourceConfig {
