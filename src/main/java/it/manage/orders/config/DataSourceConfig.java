@@ -37,7 +37,7 @@ import java.util.Objects;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-        basePackages = "it.manage.orders.repository, it.auth.security.starter.repository",
+        basePackages = {"it.manage.orders.repository", "it.auth.security.starter.repository"},
         entityManagerFactoryRef = "entityManagerFactory"
 )
 public class DataSourceConfig {
@@ -80,7 +80,7 @@ public class DataSourceConfig {
 
         return builder
                 .dataSource(dataSource)
-                .packages("it.manage.orders.entity, it.auth.security.core.entity")
+                .packages("it.manage.orders.entity", "it.auth.security.core.entity")
                 .persistenceUnit("manage-orders")
                 .properties(properties)
                 .build();
