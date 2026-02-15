@@ -1,5 +1,6 @@
 package it.manage.orders.consumer;
 
+import it.auth.security.starter.service.AuthService;
 import it.manage.orders.dto.OrderDTO;
 import it.manage.orders.entity.Order;
 import it.manage.orders.entity.Product;

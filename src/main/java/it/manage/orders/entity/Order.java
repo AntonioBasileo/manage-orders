@@ -31,7 +31,7 @@ public class Order {
 
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private AppUser appUser;
+    private ManageOrdersUser manageOrdersUser;
 
     private String status;
 
