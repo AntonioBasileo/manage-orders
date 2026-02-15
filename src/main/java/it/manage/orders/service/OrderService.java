@@ -61,6 +61,6 @@ public class OrderService {
      * @return lista degli ordini dell'utente autenticato
      */
     public java.util.List<Order> getOrdersForAuthenticatedUser() {
-        return orderRepository.findByAppUserUsername(authService.getAuthenticatedUser().getUsername());
+        return orderRepository.findByManageOrdersUserUsername(authService.getAuthenticatedUser().getUsername());
     }
 }
