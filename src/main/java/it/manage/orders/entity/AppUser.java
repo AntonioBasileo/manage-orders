@@ -1,28 +1,16 @@
 package it.manage.orders.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 
-@Entity
-@Getter
-@Setter
-@NoArgsConstructor
-public class AppUser {
 
-    @Id
-    private String username;
-
-    private String password;
-
-    @CreationTimestamp
-    private LocalDateTime registrationDate;
+public class AppUser extends it.auth.security.core.entity.AppUser {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "appUser")
