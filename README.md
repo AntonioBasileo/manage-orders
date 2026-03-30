@@ -2,11 +2,13 @@
 
 **Manage Orders** è un'applicazione basata su Spring Boot e Java progettata per la gestione sicura e scalabile degli ordini. L'applicazione adotta un approccio **event-driven** tramite Kafka e separa nettamente la persistenza dalla comunicazione esterna tramite l'uso di **DTO** e **Mapper**.
 
-## 🚀 Novità e Miglioramenti Recenti
+## Novita e miglioramenti recenti
 
-- **Layer DTO & Mapping:** Implementazione di un layer di Data Transfer Object (`dto`) e relativi `mapper` per disaccoppiare le entità JPA dal contratto delle API e dai messaggi Kafka.
-- **Gestione Profili Maven/Spring:** Configurazione avanzata dei profili (`local`, `remote`) con filtraggio delle risorse tramite Maven per una gestione dinamica delle configurazioni tra ambienti di sviluppo e container.
-- **Ottimizzazione Docker:** Configurazione di MySQL con supporto per il case-insensitivity (`lower_case_table_names=1`) per garantire la compatibilità dei database Linux/Docker con gli script Liquibase.
+Negli ultimi aggiornamenti il progetto e' stato reso piu' modulare e piu' semplice da gestire tra ambienti locali e deploy remoto.
+
+- **Layer DTO e Mapper:** introduzione di `dto` e `mapper` per disaccoppiare entita' JPA, API REST e payload Kafka.
+- **Profili Maven/Spring:** separazione dei profili `local` e `remote` con filtraggio risorse Maven per parametrizzare configurazioni e bootstrap.
+- **Compatibilita' Docker/MySQL:** tuning di MySQL (incluso `lower_case_table_names=1`) per evitare mismatch di naming con Liquibase in ambienti Linux/container.
 
 ## 🛠️ Stack Tecnologico
 
@@ -25,7 +27,60 @@ L'applicazione segue un flusso asincrono per la creazione degli ordini:
 1. **REST Controller:** Riceve un `OrderDTO` e lo valida.
 2. **Service Layer:** Converte il DTO in `Order` (Entity), aggiorna le disponibilità dei prodotti e arricchisce l'ordine con i dati dell'utente autenticato.
 3. **Kafka Producer:** Invia il DTO serializzato al topic `topic-orders`.
-4. **Kafka Consumer:** Il `CustomKafkaListener` riceve il batch di ordini e li persiste nel database MySQL.
+4. **Kafka Consumer:** Il `CustomKafkaListener` riceve il messaggio e lo persiste nel database MySQL.
+
+### Struttura Kafka del progetto
+
+La configurazione Kafka e' organizzata con responsabilita' separate:
+
+- `KafkaProducerConfig`: costruisce il `ProducerFactory` e il `KafkaTemplate` (`retryableTopicKafkaTemplate`) usando le proprieta' `spring.kafka.producer.*`.
+- `KafkaConsumerConfig`: crea `ConsumerFactory` e `manageOrdersListenerContainerFactory`, con supporto a concorrenza (nel profilo local e' impostata a `3`).
+- `KafkaRetryConfig`: configura retry non-blocking con backoff esponenziale e pubblicazione automatica su topic di retry e DLT.
+
+Topic e flusso messaggi:
+
+- **Topic principale:** `topic-orders` (input ordini).
+- **Topic retry:** creati automaticamente con suffisso `-retry`.
+- **Dead Letter Topic (DLT):** creata automaticamente con suffisso `-dlt`.
+- **Consumer Group:** `manage-orders`.
+
+Flusso applicativo dettagliato:
+
+1. Il controller invia la richiesta al service (`OrderService`).
+2. Il service pubblica un evento Avro su `topic-orders` tramite `KafkaTemplate`.
+3. `CustomKafkaListener` consuma dal topic principale con `manageOrdersListenerContainerFactory`.
+4. Se la consumazione fallisce con eccezioni gestite, Spring Kafka inoltra il record sui topic `-retry` secondo la policy esponenziale.
+5. Al superamento dei tentativi, il messaggio viene inviato al topic `-dlt`.
+6. Il metodo `@DltHandler` salva il contenuto del messaggio non processato nella tabella di dead letter (`manage_orders_dead_letter`).
+
+Disegno architetturale (semplificato):
+
+```text
+Client REST
+    |
+    v
+OrderController -> OrderService -> Kafka Producer (KafkaTemplate)
+                                   |
+                                   v
+                           topic-orders (main)
+                                   |
+                                   v
+                    CustomKafkaListener (consumer group: manage-orders)
+                         | successo                    | errore retryable
+                         v                             v
+                    MySQL (orders)            topic-orders-retry-* (backoff)
+                                                      |
+                                                      v
+                                            topic-orders-dlt
+                                                      |
+                                                      v
+                                  @DltHandler -> MySQL (dead letter)
+```
+
+Note operative:
+
+- In ambiente single-broker (es. Docker Desktop/Kubernetes locale), la replica dei topic deve essere coerente con il numero di broker disponibili.
+- Il producer/consumer usa serializzazione Avro (con Schema Registry configurato via `spring.kafka.properties['schema.registry.url']`).
 
 ## 🚦 Guida all'avvio
 

@@ -1,7 +1,37 @@
-manage-orders:
-  environment: local
-
 spring:
+  kafka:
+    bootstrap-servers: "localhost:9092"
+    topics: "topic-orders'"
+    properties:
+      '[schema.registry.url]': "http://localhost:8081"
+    consumer:
+      groupId: manage-orders
+      reconnect-backoff-ms: 5000
+      reconnect-backoff-max-ms: 30000
+      socket-connection-setup-timeout-ms: 10000
+      socket-connection-setup-timeout-max-ms: 30000
+      max-poll-records: 100
+      concurrency: 3
+    producer:
+      key-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      properties:
+        '[acks]': all
+        '[retries]': 5
+        '[delivery.timeout.ms]': 120000
+        '[auto.register.schemas]': false
+        '[use.latest.version]': true
+    retry:
+      max-attempts: 5
+      initial-interval-ms: 5000
+      multiplier: 2.0
+      max-interval-ms: 60000
+    dlt:
+      reprocessing:
+        interval-ms: 600000
+        initial-delay-ms: 300000
+        max-per-run: 100
+        max-attempts: 5
   datasource:
     username: root
     password: root
@@ -15,21 +45,56 @@ spring:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.MySQLDialect
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      topic: topic-orders
-      group-id: manage-orders
-      retries: 5
-      retry-backoff-ms: 2000
   liquibase:
     enabled: true
     changelog: config/liquibase/master.xml
     schema: manage-orders
+  main:
+    banner-mode: OFF
+  application:
+    name: "@project.artifactId@"
+
+management:
+  server:
+    port: 9080
+  metrics:
+    prometheus:
+      metrics:
+        export:
+          enabled: true
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    env:
+      enabled: true
+    health:
+      enabled: true
+      group:
+        live:
+          include: livenessState,kafkaListenerContainer
+        ready:
+          include: readinessState,kafkaListenerContainer
+      show-details: always
+    info:
+      enabled: true
+    prometheus:
+      enabled: true
 
 logging:
+  format: simple
   level:
     root: INFO
+
+appconfig:
+  development: true
 
 server:
   port: 8081
