@@ -8,7 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
-@Table(name = "t_manage_orders_dead_letter")
+@Table
 @DynamicUpdate
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,48 +22,47 @@ public class ManageOrdersDeadLetter implements java.io.Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_dead_letter", nullable = false)
+    @Column(nullable = false)
     private Long id;
 
-    @Column(name = "chiave_kafka", columnDefinition = "TEXT")
+    @Column
     private String originalKey;
 
-    @Column(name = "received_topic", nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false)
     private String receivedTopic;
 
-    @Column(name = "messaggio_kafka_json", columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
     private String deadLetterMessage;
 
-    @Column(name = "topic_iniziale", columnDefinition = "TEXT")
+    @Column
     private String originalTopic;
 
-    @Column(name = "partizione_iniziale")
+    @Column
     private Integer originalPartition;
 
-    @Column(name = "offset_iniziale")
+    @Column
     private Long originalOffset;
 
-    @Column(name = "classe_eccezione", columnDefinition = "TEXT")
+    @Column
     private String exceptionClass;
 
-    @Column(name = "messaggio_eccezione", columnDefinition = "TEXT")
+    @Column
     private String exceptionMessage;
 
     @Builder.Default
-    @Column(name = "retry_count", nullable = false)
+    @Column(nullable = false)
     private Integer retryCount = 0;
 
-    @Column(name = "ultimo_errore_reprocessing", columnDefinition = "TEXT")
+    @Column
     private String lastReprocessingError;
 
-    @Column(name = "processed")
+    @Column
     private Boolean processed;
 
     @CreationTimestamp
-    @Column(name = "data_creazione", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "data_ultimo_aggiornamento")
     private LocalDateTime updatedAt;
 }
