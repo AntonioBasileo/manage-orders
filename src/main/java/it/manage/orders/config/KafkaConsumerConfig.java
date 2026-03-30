@@ -48,11 +48,11 @@ public class KafkaConsumerConfig {
     private final KafkaProperties kafkaProperties;
     private final CustomDeserializer customDeserializer;
 
-    @Value("${spring.kafka.consumer.group-id}")
-    private String groupId;
-
     @Value("${spring.kafka.bootstrap-servers}")
     private List<String> kafkaBootstrapServers;
+
+    @Value("${spring.kafka.consumer.group-id}")
+    private String groupId;
 
     @Value("${spring.kafka.consumer.reconnect-backoff-ms}")
     private long reconnectBackoffMs;

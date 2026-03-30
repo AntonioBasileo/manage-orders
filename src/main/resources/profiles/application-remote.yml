@@ -50,47 +50,10 @@ spring:
   application:
     name: "@project.artifactId@"
 
-management:
-  server:
-    port: 9080
-  metrics:
-    prometheus:
-      metrics:
-        export:
-          enabled: true
-  health:
-    livenessstate:
-      enabled: true
-    readinessstate:
-      enabled: true
-  endpoints:
-    enabled-by-default: false
-    web:
-      exposure:
-        include: '*'
-  endpoint:
-    env:
-      enabled: true
-    health:
-      enabled: true
-      group:
-        live:
-          include: livenessState,kafkaListenerContainer
-        ready:
-          include: readinessState,kafkaListenerContainer
-      show-details: always
-    info:
-      enabled: true
-    prometheus:
-      enabled: true
-
 logging:
   format: simple
   level:
     root: INFO
-
-appconfig:
-  development: true
 
 server:
   port: 8081
