@@ -1,10 +1,12 @@
 package it.manage.orders.config;
 
+import it.manage.orders.dto.OrderDTO;
+import it.manage.orders.utility.CustomDeserializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
 import org.springframework.context.annotation.Bean;
@@ -44,6 +46,7 @@ import java.util.Map;
 public class KafkaConsumerConfig {
 
     private final KafkaProperties kafkaProperties;
+    private final CustomDeserializer customDeserializer;
 
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
@@ -108,10 +111,7 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
-        props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, "io.confluent.kafka.serializers.KafkaAvroDeserializer");
-        props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, "io.confluent.kafka.serializers.KafkaAvroDeserializer");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
         return props;
     }
@@ -138,8 +138,8 @@ public class KafkaConsumerConfig {
      * @return factory configurata per listener che consumano chiavi e valori Avro come {@link GenericRecord}
      */
     @Bean("manageOrdersListenerContainerFactory")
-    public ConcurrentKafkaListenerContainerFactory<GenericRecord, GenericRecord> listenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<GenericRecord, GenericRecord> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, OrderDTO> listenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, OrderDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConcurrency(concurrency);
         factory.setBatchListener(false);
         factory.setConsumerFactory(consumerFactory(consumerConfigs()));
@@ -155,7 +155,7 @@ public class KafkaConsumerConfig {
      * @return factory configurata per deserializzare messaggi Avro come {@link GenericRecord}
      */
     @Bean
-    public ConsumerFactory<GenericRecord, GenericRecord> consumerFactory(Map<String, Object> props) {
-        return new DefaultKafkaConsumerFactory<>(props);
+    public DefaultKafkaConsumerFactory<String, OrderDTO> consumerFactory(Map<String, Object> props) {
+        return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), customDeserializer);
     }
 }

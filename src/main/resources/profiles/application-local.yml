@@ -1,9 +1,7 @@
 spring:
   kafka:
     bootstrap-servers: "localhost:9092"
-    topics: "topic-orders'"
-    properties:
-      '[schema.registry.url]': "http://localhost:8081"
+    topics: "topic-orders"
     consumer:
       groupId: manage-orders
       reconnect-backoff-ms: 5000

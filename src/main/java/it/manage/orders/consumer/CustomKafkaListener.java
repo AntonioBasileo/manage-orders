@@ -10,12 +10,9 @@ import it.manage.orders.repository.DeadLetterRepository;
 import it.manage.orders.repository.OrderRepository;
 import it.manage.orders.repository.ProductRepository;
 import it.manage.orders.utility.DltPayloadUtils;
-import it.manage.orders.utility.GenericAvroUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -23,7 +20,6 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 
@@ -55,18 +51,18 @@ public class CustomKafkaListener {
         idIsGroup = false,
         topics = "${spring.kafka.topics}",
         containerFactory = "manageOrdersListenerContainerFactory")
-    public void consume(ConsumerRecord<GenericRecord, GenericRecord> consumerRecord) {
+    public void consume(ConsumerRecord<String, OrderDTO> consumerRecord) {
         log.debug("consume({})", consumerRecord);
         log.debug("KEY:{}\tVALUE:{}", consumerRecord.key(), consumerRecord.value());
 
-        Optional<GenericRecord> value = Optional.ofNullable(consumerRecord.value());
+        Optional<OrderDTO> value = Optional.ofNullable(consumerRecord.value());
 
         if (value.isEmpty()) {
             log.warn("Received tombstone for key: '{}'", consumerRecord.key());
             return;
         }
 
-        this.processOrder(this.buildOrderDTO(value.get()));
+        this.processOrder(value.get());
     }
 
     @DltHandler
@@ -153,22 +149,5 @@ public class CustomKafkaListener {
         }
 
         orderRepository.save(order);
-    }
-
-    private OrderDTO buildOrderDTO(GenericRecord topicRecord) {
-        OrderDTO dto = new OrderDTO();
-
-        GenericAvroUtils.getAsString(topicRecord, "username")
-            .ifPresentOrElse(dto::setUsername, throwInvalidField("username"));
-        GenericAvroUtils.getAsString(topicRecord, "status")
-            .ifPresentOrElse(dto::setStatus, throwInvalidField("status"));
-
-        return dto;
-    }
-
-    public static Runnable throwInvalidField(String message) {
-        return () -> {
-            throw new NoSuchElementException(message);
-        };
     }
 }

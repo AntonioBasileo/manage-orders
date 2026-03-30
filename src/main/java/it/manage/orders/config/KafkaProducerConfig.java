@@ -1,12 +1,14 @@
 package it.manage.orders.config;
 
+import it.manage.orders.dto.OrderDTO;
+import it.manage.orders.entity.Order;
+import it.manage.orders.utility.CustomSerializer;
 import lombok.RequiredArgsConstructor;
-import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
-import org.springframework.boot.ssl.SslBundles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -24,7 +26,7 @@ import java.util.Map;
  * gestiti da {@link KafkaRetryConfig}.
  * <p>
  * Le proprietà di base (serializzatori Avro, schema registry URL) vengono ereditate da
- * {@code spring.kafka.producer.*} tramite {@link KafkaProperties#buildProducerProperties(SslBundles)};
+ * {@code spring.kafka.producer.*} tramite {@link KafkaProperties#buildProducerProperties()};
  * su di esse vengono poi applicati gli override espliciti richiesti dal servizio.
  *
  * @author Antonio Basileo
@@ -34,6 +36,7 @@ import java.util.Map;
 public class KafkaProducerConfig {
 
     private final KafkaProperties kafkaProperties;
+    private final CustomSerializer customSerializer;
 
     @Value("${spring.kafka.bootstrap-servers}")
     private List<String> kafkaBootstrapServers;
@@ -55,18 +58,34 @@ public class KafkaProducerConfig {
     public Map<String, Object> producerConfigs() {
         Map<String, Object> props = kafkaProperties.buildProducerProperties();
 
+        //PRODUCER PROPS
+        props.put(ProducerConfig.RETRIES_CONFIG, 3);
+        props.put(ProducerConfig.ACKS_CONFIG, "all");
+        props.put(ProducerConfig.LINGER_MS_CONFIG, 10);
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
         return props;
     }
 
+    /**
+     * Crea e configura il producer factory per Kafka.
+     *
+     * @return factory configurata per la serializzazione di {@link Order}
+     */
     @Bean
-    public ProducerFactory<GenericRecord, GenericRecord> kafkaProducerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfigs());
+    public ProducerFactory<String, OrderDTO> producerFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfigs(), new StringSerializer(), customSerializer);
     }
 
-    @Bean(name = "retryableTopicKafkaTemplate")
-    public KafkaTemplate<GenericRecord, GenericRecord> retryableTopicKafkaTemplate() {
-        return new KafkaTemplate<>(kafkaProducerFactory());
+    /**
+     * Crea e configura il KafkaTemplate per l'invio dei messaggi.
+     *
+     * @return template configurato per l'invio di {@link Order}
+     */
+    @Bean
+    @Qualifier("kafkaTemplate")
+    public KafkaTemplate<String, OrderDTO> kafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
     }
 }

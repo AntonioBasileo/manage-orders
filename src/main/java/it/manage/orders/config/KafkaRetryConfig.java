@@ -1,7 +1,7 @@
 package it.manage.orders.config;
 
 import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
-import org.apache.avro.generic.GenericRecord;
+import it.manage.orders.dto.OrderDTO;
 import org.apache.kafka.common.errors.SerializationException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -68,7 +68,7 @@ public class KafkaRetryConfig {
      * @return configurazione retry topic applicata alla topic indicata da {@code app.topics.orders.inputName}
      */
     @Bean
-    public RetryTopicConfiguration manageOrdersRetryConfig(@Qualifier("retryableTopicKafkaTemplate") KafkaTemplate<GenericRecord, GenericRecord> template) {
+    public RetryTopicConfiguration manageOrdersRetryConfig(@Qualifier("kafkaTemplate") KafkaTemplate<String, OrderDTO> template) {
         return RetryTopicConfigurationBuilder
                 .newInstance()
                 .dltHandlerMethod("customKafkaListener", "handleDltMessage")
