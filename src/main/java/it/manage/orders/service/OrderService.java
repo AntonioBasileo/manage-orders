@@ -32,7 +32,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final KafkaTemplate<String, OrderDTO> kafkaTemplate;
 
-    @Value("${spring.kafka.consumer.topics}")
+    @Value("${spring.kafka.topics}")
     private String kafkaTopic;
 
 
