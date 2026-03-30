@@ -11,8 +11,6 @@ spring:
       max-poll-records: 100
       concurrency: 3
     producer:
-      key-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
-      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
       properties:
         '[acks]': all
         '[retries]': 5
