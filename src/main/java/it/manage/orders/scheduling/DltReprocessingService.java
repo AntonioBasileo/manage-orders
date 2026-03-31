@@ -60,6 +60,7 @@ public class DltReprocessingService {
     private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final CustomKafkaListener customKafkaListener;
 
     @Value("${spring.kafka.dlt.reprocessing.max-per-run:100}")
     private int maxPerRun;
@@ -109,7 +110,7 @@ public class DltReprocessingService {
                 OrderDTO dto = objectMapper.readValue(normalizedPayload, OrderDTO.class);
                 log.info("DLT record id={} in attesa di riprocessamento.", dl.getId());
 
-                CustomKafkaListener.toEntityOrder(dto, orderMapper, productRepository, orderRepository);
+                customKafkaListener.toEntityOrder(dto, orderMapper, productRepository, orderRepository);
 
                 dl.setProcessed(true);
                 dl.setLastReprocessingError(null);
