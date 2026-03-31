@@ -11,7 +11,6 @@ import it.manage.orders.repository.ProductRepository;
 import it.manage.orders.utility.DltPayloadUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -108,7 +107,7 @@ public class DltReprocessingService {
                 dl.setDeadLetterMessage(normalizedPayload);
 
                 OrderDTO dto = objectMapper.readValue(normalizedPayload, OrderDTO.class);
-                log.info("DLT record id={} in attesa di riprocessamento.", dl.getId());
+                log.info("DLT record id={} in attesa di essere riprocessato.", dl.getId());
 
                 customKafkaListener.toEntityOrder(dto, orderMapper, productRepository, orderRepository);
 
