@@ -34,19 +34,15 @@ public class ManageOrdersDeadLetter implements java.io.Serializable {
     @Column(columnDefinition = "LONGTEXT")
     private String deadLetterMessage;
 
-    @Column
     private String originalTopic;
 
-    @Column
     private Integer originalPartition;
 
-    @Column
     private Long originalOffset;
 
-    @Column
     private String exceptionClass;
 
-    @Column
+    @Column(columnDefinition = "LONGTEXT")
     private String exceptionMessage;
 
     @Builder.Default
