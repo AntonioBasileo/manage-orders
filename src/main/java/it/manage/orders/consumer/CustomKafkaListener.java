@@ -3,12 +3,14 @@ package it.manage.orders.consumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.manage.orders.dto.OrderDTO;
 import it.manage.orders.entity.ManageOrdersDeadLetter;
+import it.manage.orders.entity.ManageOrdersUser;
 import it.manage.orders.entity.Order;
 import it.manage.orders.entity.Product;
 import it.manage.orders.mapper.OrderMapper;
 import it.manage.orders.repository.DeadLetterRepository;
 import it.manage.orders.repository.OrderRepository;
 import it.manage.orders.repository.ProductRepository;
+import it.manage.orders.repository.UserRepository;
 import it.manage.orders.utility.DltPayloadUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +44,7 @@ public class CustomKafkaListener {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final DeadLetterRepository deadLetterRepository;
+    private final UserRepository userRepository;
 
     public static final String LISTENER_ID = "manage-orders-listener";
 
@@ -129,8 +132,9 @@ public class CustomKafkaListener {
         log.info("Order processed successfully.");
     }
 
-    public static void toEntityOrder(OrderDTO dto, OrderMapper orderMapper, ProductRepository productRepository, OrderRepository orderRepository) {
+    public void toEntityOrder(OrderDTO dto, OrderMapper orderMapper, ProductRepository productRepository, OrderRepository orderRepository) {
         Order order = orderMapper.toEntity(dto);
+        order.setManageOrdersUser((ManageOrdersUser) userRepository.findByUsername(dto.getUsername()).orElseThrow());
 
         for (Product product : order.getProducts()) {
             String productCode = product.getCode();
